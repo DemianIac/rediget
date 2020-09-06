@@ -13,14 +13,9 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ItemListActivity">
+    tools:context=".reader.presentation.PostListActivity">
 
-    <!--
-    This layout is a two-pane layout for the Items master/detail flow.
-    -->
-
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:name="com.diacono.rediget.ItemListFragment"
         android:layout_width="@dimen/item_width"
@@ -28,7 +23,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.diacono.rediget.ItemListActivity"
+        tools:context=".reader.presentation.PostListActivity"
         tools:listitem="@layout/item_list_content" />
 
     <FrameLayout
