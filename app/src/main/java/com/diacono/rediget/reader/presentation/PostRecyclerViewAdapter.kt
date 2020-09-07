@@ -1,6 +1,5 @@
 package com.diacono.rediget.reader.presentation
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
-import com.diacono.rediget.reader.presentation.detail.PostDetailActivity
-import com.diacono.rediget.reader.presentation.detail.PostDetailFragment
 
 class PostRecyclerViewAdapter(
     private val parentActivity: PostListActivity,
