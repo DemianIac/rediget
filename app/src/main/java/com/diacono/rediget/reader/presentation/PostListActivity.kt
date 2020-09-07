@@ -54,7 +54,6 @@ class PostListActivity : AppCompatActivity() {
         posts: List<Post>
     ) {
         recyclerView.adapter = PostRecyclerViewAdapter(
-            this,
             posts,
             itemClickListener()
         )
@@ -62,6 +61,7 @@ class PostListActivity : AppCompatActivity() {
 
     private fun itemClickListener() = View.OnClickListener { v ->
         val item = v.tag as Post
+        viewModel.onSelectedPost(item)
         if (!isInTwoPaneMode())
             moveToSingleDetail()
     }

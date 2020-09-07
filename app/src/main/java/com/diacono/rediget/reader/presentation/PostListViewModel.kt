@@ -19,6 +19,8 @@ class PostListViewModel(val topPostsAction: GetTopPosts) : ViewModel() {
     val postList: LiveData<List<Post>> = mutablePostList
     private var mutableErrorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = mutableErrorMessage
+    private var mutableSelectedPost = MutableLiveData<Post>()
+    val selectedPost: LiveData<Post> = mutableSelectedPost
 
     init {
         getTopPost(PAGINATION_ZIE)
@@ -45,6 +47,10 @@ class PostListViewModel(val topPostsAction: GetTopPosts) : ViewModel() {
 
     private fun createPostList(redditResponse: RedditResponse): List<Post> {
         return redditResponse.data.children.map { it.data.toPost() }
+    }
+
+    fun onSelectedPost(selectedPost: Post) {
+        mutableSelectedPost.value = selectedPost
     }
 
     companion object {

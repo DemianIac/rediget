@@ -48,6 +48,22 @@ class PostListViewModelTest {
         thenErrorMessageIs(POST_ERROR_MESSAGE)
     }
 
+    @Test
+    fun `adding a selected post should update de live data`() {
+        givenValidPostsResponseAmmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenAViewModel()
+        whenSettingASelectedPost(POST_LIST.first())
+        thenPostIsSelected(POST_LIST.first())
+    }
+
+    private fun thenPostIsSelected(selectedPost: Post) {
+        assertEquals(selectedPost, postListViewModel.selectedPost.value)
+    }
+
+    private fun whenSettingASelectedPost(selectedPost: Post) {
+        postListViewModel.onSelectedPost(selectedPost)
+    }
+
     private fun givenPostsResponseAmountWithError(limit: Int) {
         whenever(getTopPostsAction(limit)).thenReturn(
             Single.just(
