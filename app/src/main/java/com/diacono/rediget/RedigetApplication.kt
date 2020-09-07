@@ -1,6 +1,9 @@
 package com.diacono.rediget
 
 import android.app.Application
+import com.diacono.rediget.network.networkModule
+import com.diacono.rediget.reader.di.actionsModule
+import com.diacono.rediget.reader.di.readerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.fragment.koin.fragmentFactory
@@ -14,7 +17,7 @@ class RedigetApplication : Application() {
             androidLogger()
             fragmentFactory()
             androidContext(this@RedigetApplication)
-            modules(listOf())
+            modules(listOf(networkModule,actionsModule,readerModule))
         }
     }
 }

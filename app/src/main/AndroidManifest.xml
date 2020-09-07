@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diacono.rediget">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".RedigetApplication"
         android:allowBackup="true"
@@ -21,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.diacono.rediget.reader.presentation.PostDetailActivity"
+            android:name="com.diacono.rediget.reader.presentation.detail.PostDetailActivity"
             android:label="@string/title_item_detail"
             android:parentActivityName="com.diacono.rediget.reader.presentation.PostListActivity"
             android:theme="@style/AppTheme.NoActionBar">

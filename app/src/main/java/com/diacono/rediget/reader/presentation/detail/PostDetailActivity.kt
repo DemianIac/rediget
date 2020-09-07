@@ -1,20 +1,22 @@
-package com.diacono.rediget.reader.presentation
+package com.diacono.rediget.reader.presentation.detail
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.diacono.rediget.R
+import com.diacono.rediget.reader.presentation.PostListActivity
 
 class PostDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item_detail)
+        setContentView(R.layout.activity_post_detail)
         setSupportActionBar(findViewById(R.id.detail_toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (savedInstanceState == null) {
-            val fragment = PostDetailFragment().apply {
+            val fragment = PostDetailFragment()
+                .apply {
                 arguments = Bundle().apply {
                     putString(
                         PostDetailFragment.ARG_ITEM_ID,
@@ -23,7 +25,7 @@ class PostDetailActivity : AppCompatActivity() {
             }
 
             supportFragmentManager.beginTransaction()
-                    .add(R.id.item_detail_container, fragment)
+                    .add(R.id.post_detail_container, fragment)
                     .commit()
         }
     }
