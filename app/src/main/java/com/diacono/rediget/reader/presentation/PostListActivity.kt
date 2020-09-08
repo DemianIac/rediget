@@ -11,11 +11,13 @@ import androidx.fragment.app.FragmentTransaction
 import com.diacono.rediget.R
 import androidx.lifecycle.Observer
 import com.diacono.rediget.reader.domain.model.Post
+import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.scope.stateViewModel
 
 class PostListActivity : AppCompatActivity() {
 
-    val viewModel: PostListViewModel by viewModel()
+    private val viewModel: PostListViewModel by lifecycleScope.stateViewModel(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

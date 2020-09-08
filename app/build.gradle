@@ -27,13 +27,14 @@ android {
     }
 }
 
-def koin_version = '2.1.5'
+def koin_version = '2.1.6'
 def rxjava_version = '2.2.12'
 def rxandroid_version = '2.1.1'
 def mockito_kotlin = '2.2.0'
 def retrofit_version = '2.6.0'
 def constraint_layout_version = '2.0.1'
 def glide_version = '4.11.0'
+def saved_state_version = '2.2.0'
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -73,4 +74,7 @@ dependencies {
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    //Save State
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$saved_state_version"
 }

@@ -3,17 +3,20 @@ package com.diacono.rediget.reader.presentation
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.diacono.rediget.reader.domain.core.actions.GetTopPosts
 import com.diacono.rediget.reader.domain.model.Post
-import com.diacono.rediget.reader.infraestructure.response.RedditChildrenResponse
 import com.diacono.rediget.reader.infraestructure.response.RedditPostResponse
 import com.diacono.rediget.reader.infraestructure.response.RedditResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class PostListViewModel(val topPostsAction: GetTopPosts) : ViewModel() {
+class PostListViewModel(
+    val savedStateHandle: SavedStateHandle,
+    val topPostsAction: GetTopPosts
+) : ViewModel() {
 
     private var mutablePostList = MutableLiveData<List<Post>>()
     val postList: LiveData<List<Post>> = mutablePostList
@@ -23,7 +26,10 @@ class PostListViewModel(val topPostsAction: GetTopPosts) : ViewModel() {
     val selectedPost: LiveData<Post> = mutableSelectedPost
 
     init {
-        getTopPost(PAGINATION_ZIE)
+        getTopPost(PAGINATION_SIZE)
+        savedStateHandle.get<Post>(SELECTED_POST)?.let {
+            onSelectedPost(it)
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -51,10 +57,12 @@ class PostListViewModel(val topPostsAction: GetTopPosts) : ViewModel() {
 
     fun onSelectedPost(selectedPost: Post) {
         mutableSelectedPost.value = selectedPost
+        savedStateHandle.set(SELECTED_POST, selectedPost)
     }
 
     companion object {
-        const val PAGINATION_ZIE = 10
+        const val PAGINATION_SIZE = 10
+        const val SELECTED_POST = "SELECTED_POST"
     }
 
 }
