@@ -10,8 +10,10 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
+import kotlinx.android.synthetic.main.fragment_post_list.*
 import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.scope.stateViewModel
 
@@ -46,6 +48,7 @@ class PostListActivity : AppCompatActivity() {
     private fun observeProperty() {
         viewModel.postList.observe(this, Observer {
             loading = true
+            vSwipeToRefresh.isRefreshing = false
             setupRecyclerView(findViewById(R.id.item_list), it)
         })
     }
@@ -77,6 +80,9 @@ class PostListActivity : AppCompatActivity() {
         recyclerView.adapter = PostRecyclerViewAdapter(
             posts,
             itemClickListener()
+        )
+        vSwipeToRefresh.setOnRefreshListener(
+            SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
         )
     }
 

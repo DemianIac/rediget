@@ -77,6 +77,19 @@ class PostListViewModelTest {
         thenMorePostAreReturned(POST_LIST)
     }
 
+    @Test
+    fun `refreshing top post should reset the list of posts`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenAViewModel()
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_REFRESH_POST_RESPONSE)
+        whenRefreshIsDone()
+        thenPostAreReturned(POST_REFRESH_LIST)
+    }
+
+    private fun whenRefreshIsDone() {
+        postListViewModel.refreshPosts()
+    }
+
     private fun thenMorePostAreReturned(postList: List<Post>) {
         assertEquals(postList+postList, postListViewModel.postList.value)
     }
@@ -182,6 +195,33 @@ class PostListViewModelTest {
                 123L
             )
         )
+
+        private val redditRefreshPostResponse =
+            RedditPostResponse(
+                "superhero",
+                "Test",
+                "Post",
+                "Carl",
+                null,
+                0,
+                123L
+            )
+
+        val REDDIT_REFRESH_POST_RESPONSE=
+            RedditResponse(RedditDataResponse(listOf(RedditChildrenResponse(redditRefreshPostResponse))))
+
+        val POST_REFRESH_LIST = listOf(
+            Post(
+                "superhero",
+                "Test",
+                "Post",
+                "Carl",
+                null,
+                0,
+                123L
+            )
+        )
+
     }
 
 }

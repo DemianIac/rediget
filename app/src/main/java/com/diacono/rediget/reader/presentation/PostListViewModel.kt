@@ -86,6 +86,10 @@ class PostListViewModel(
         mutablePostList.value?.last()?.name?.let { loadMorePosts(PAGINATION_SIZE, it) }
     }
 
+    fun refreshPosts() {
+        getTopPost(PAGINATION_SIZE)
+    }
+
     companion object {
         const val PAGINATION_SIZE = 10
         const val SELECTED_POST = "SELECTED_POST"
