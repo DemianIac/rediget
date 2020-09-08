@@ -15,16 +15,13 @@
     android:showDividers="middle"
     tools:context=".reader.presentation.PostListActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/item_list"
-        android:name="com.diacono.rediget.ItemListFragment"
+    <FrameLayout
+        android:id="@+id/activity_container"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".reader.presentation.PostListActivity"
-        tools:listitem="@layout/item_post_list_content" />
+        android:layout_marginRight="16dp" >
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/post_detail_container"
