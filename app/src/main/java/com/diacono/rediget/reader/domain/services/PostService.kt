@@ -10,4 +10,10 @@ interface PostService {
 
     @GET("/top.json")
     fun getTop(@Query("limit") limit: Int): Single<Response<RedditResponse>>
+
+    @GET("/top.json")
+    fun getMoreTop(
+        @Query("limit") limit: Int,
+        @Query("after") after: String
+    ): Single<Response<RedditResponse>>
 }

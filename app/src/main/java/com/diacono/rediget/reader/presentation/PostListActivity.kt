@@ -2,22 +2,24 @@ package com.diacono.rediget.reader.presentation
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.widget.NestedScrollView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.diacono.rediget.R
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
 import org.koin.androidx.scope.lifecycleScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.scope.stateViewModel
 
 class PostListActivity : AppCompatActivity() {
 
     private val viewModel: PostListViewModel by lifecycleScope.stateViewModel(this)
+    private var mLayoutManager: LinearLayoutManager = LinearLayoutManager(this)
+    private var loading = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +36,16 @@ class PostListActivity : AppCompatActivity() {
             }
         } else {
             supportFragmentManager.inTransaction {
-                replace(R.id.activity_container, PostListFragment.newInstance()).addToBackStack(POST_LIST)
+                replace(R.id.activity_container, PostListFragment.newInstance()).addToBackStack(
+                    POST_LIST
+                )
             }
         }
     }
 
     private fun observeProperty() {
         viewModel.postList.observe(this, Observer {
+            loading = true
             setupRecyclerView(findViewById(R.id.item_list), it)
         })
     }
@@ -55,10 +60,28 @@ class PostListActivity : AppCompatActivity() {
         recyclerView: RecyclerView,
         posts: List<Post>
     ) {
+        //Todo PagedList implementation would be better here
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    if (loading) {
+                        if (needToLoadMorePosts()) {
+                            loading = false
+                            viewModel.onNeedToLoadMorePosts()
+                        }
+                    }
+                }
+            }
+        })
+        recyclerView.layoutManager = mLayoutManager
         recyclerView.adapter = PostRecyclerViewAdapter(
             posts,
             itemClickListener()
         )
+    }
+
+    private fun needToLoadMorePosts(): Boolean {
+        with(mLayoutManager) { return childCount + findFirstVisibleItemPosition() >= itemCount }
     }
 
     private fun itemClickListener() = View.OnClickListener { v ->
@@ -83,7 +106,7 @@ class PostListActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    companion object{
+    companion object {
         const val POST_LIST = "post_list"
     }
 }

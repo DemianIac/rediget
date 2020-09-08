@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.diacono.rediget.reader.domain.core.actions.GetMoreTopPosts
 import com.diacono.rediget.reader.domain.core.actions.GetTopPosts
 import com.diacono.rediget.reader.domain.model.Post
 import com.diacono.rediget.reader.infraestructure.response.RedditPostResponse
@@ -15,7 +16,8 @@ import retrofit2.Response
 
 class PostListViewModel(
     val savedStateHandle: SavedStateHandle,
-    val topPostsAction: GetTopPosts
+    val topPostsAction: GetTopPosts,
+    val moreTopPostsAction: GetMoreTopPosts
 ) : ViewModel() {
 
     private var mutablePostList = MutableLiveData<List<Post>>()
@@ -60,6 +62,30 @@ class PostListViewModel(
         savedStateHandle.set(SELECTED_POST, selectedPost)
     }
 
+    @SuppressLint("CheckResult")
+    fun loadMorePosts(limit: Int, after: String) {
+        moreTopPostsAction(limit, after)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                setMorePostsActionState(it)
+            }, { t ->
+                mutableErrorMessage.value = t!!.message
+            })
+    }
+
+    private fun setMorePostsActionState(response: Response<RedditResponse>) {
+        if (response.isSuccessful)
+            requireNotNull(response.body()).let { mutablePostList.value =
+                mutablePostList.value?.plus(createPostList(it)) }
+        else
+            mutableErrorMessage.value = response.errorBody()?.string()
+    }
+
+    fun onNeedToLoadMorePosts() {
+        mutablePostList.value?.last()?.name?.let { loadMorePosts(PAGINATION_SIZE, it) }
+    }
+
     companion object {
         const val PAGINATION_SIZE = 10
         const val SELECTED_POST = "SELECTED_POST"
@@ -67,4 +93,12 @@ class PostListViewModel(
 
 }
 
-private fun RedditPostResponse.toPost() = Post(this.subreddit,this.title,this.name,this.author,this.thumbnail,this.comments,this.created)
+private fun RedditPostResponse.toPost() = Post(
+    this.subreddit,
+    this.title,
+    this.name,
+    this.author,
+    this.thumbnail,
+    this.comments,
+    this.created
+)

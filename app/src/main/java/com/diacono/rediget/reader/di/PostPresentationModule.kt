@@ -10,6 +10,10 @@ import org.koin.dsl.module
 val readerModule = module {
     factory { PostDetailFragment() }
     scope<PostListActivity> {
-        viewModel { (handle: SavedStateHandle) -> PostListViewModel(handle, get()) }
+        viewModel { (handle: SavedStateHandle) -> PostListViewModel(
+            handle,
+            get(),
+            get()
+        ) }
     }
 }

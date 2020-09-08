@@ -2,6 +2,7 @@ package com.diacono.rediget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
+import com.diacono.rediget.reader.domain.core.actions.GetMoreTopPosts
 import com.diacono.rediget.reader.domain.core.actions.GetTopPosts
 import com.diacono.rediget.reader.domain.model.Post
 import com.diacono.rediget.reader.domain.model.exception.TopPostException
@@ -12,7 +13,6 @@ import com.diacono.rediget.reader.infraestructure.response.RedditResponse
 import com.diacono.rediget.reader.presentation.PostListViewModel
 import com.diacono.rediget.utils.RxImmediateSchedulerRule
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import okhttp3.MediaType.Companion.toMediaType
@@ -33,12 +33,13 @@ class PostListViewModelTest {
     val schedulers = RxImmediateSchedulerRule()
 
     private val getTopPostsAction: GetTopPosts = mock()
+    private val getMoreTopPostsAction: GetMoreTopPosts = mock()
     private val savedStateHandle: SavedStateHandle = mock()
     private lateinit var postListViewModel: PostListViewModel
 
     @Test
     fun `getting a list of top posts should succeed`() {
-        givenValidPostsResponseAmmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
         givenAViewModel()
         whenGettingTopPost(POST_LIMIT)
         thenPostAreReturned(POST_LIST)
@@ -53,7 +54,7 @@ class PostListViewModelTest {
 
     @Test
     fun `adding a selected post should update de live data`() {
-        givenValidPostsResponseAmmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
         givenAViewModel()
         whenSettingASelectedPost(POST_LIST.first())
         thenPostIsSelected(POST_LIST.first())
@@ -61,10 +62,37 @@ class PostListViewModelTest {
 
     @Test
     fun `with a selected post stored it should be restored when creating the view model`() {
-        givenValidPostsResponseAmmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
         givenASelectedPostStored(POST_LIST.first())
         givenAViewModel()
         thenPostIsRestored(POST_LIST.first())
+    }
+
+    @Test
+    fun `loading more data from server should succeed`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenAValidResponseWithMorePosts(POST_LIMIT, POST_AFTER, REDDIT_POST_RESPONSE)
+        givenAViewModel()
+        whenMorePostAreLoaded(POST_LIMIT, POST_AFTER)
+        thenMorePostAreReturned(POST_LIST)
+    }
+
+    private fun thenMorePostAreReturned(postList: List<Post>) {
+        assertEquals(postList+postList, postListViewModel.postList.value)
+    }
+
+    private fun whenMorePostAreLoaded(limit: Int, after: String) {
+        postListViewModel.loadMorePosts(limit, after)
+    }
+
+    private fun givenAValidResponseWithMorePosts(
+        limit: Int,
+        after: String,
+        postList: RedditResponse
+    ) {
+        whenever(getMoreTopPostsAction(limit, after)).thenReturn(
+            Single.just(Response.success<RedditResponse>(postList))
+        )
     }
 
     private fun thenPostIsRestored(post: Post) {
@@ -109,7 +137,7 @@ class PostListViewModelTest {
         assertEquals(response, postListViewModel.postList.value)
     }
 
-    private fun givenValidPostsResponseAmmount(limit: Int, postList: RedditResponse) {
+    private fun givenValidPostsResponseAmount(limit: Int, postList: RedditResponse) {
         whenever(getTopPostsAction(limit)).thenReturn(
             Single.just(Response.success<RedditResponse>(postList))
         )
@@ -120,11 +148,13 @@ class PostListViewModelTest {
     }
 
     private fun givenAViewModel() {
-        postListViewModel = PostListViewModel(savedStateHandle, getTopPostsAction)
+        postListViewModel =
+            PostListViewModel(savedStateHandle, getTopPostsAction, getMoreTopPostsAction)
     }
 
     companion object {
         const val POST_LIMIT = 10
+        const val POST_AFTER = "Test"
         const val POST_ACTION_ERROR_STATUS_CODE = 404
         val POST_ERROR_MESSAGE = TopPostException().message
 
