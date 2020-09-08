@@ -20,9 +20,9 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         observeProperty()
         setListeners()
-        init()
     }
 
     open fun observeProperty() {}

@@ -15,21 +15,26 @@ import com.diacono.rediget.reader.domain.model.Post
 
 class PostListFragment : BaseFragment() {
 
-    val viewModel: PostListViewModel by sharedViewModel()
+    private val viewModel: PostListViewModel by sharedViewModel()
     private var mLayoutManager: LinearLayoutManager = LinearLayoutManager(context)
+    private lateinit var postAdapter :PostRecyclerViewAdapter
     private var loading = true
 
     override fun layout() = R.layout.fragment_post_list
+
+    override fun init() {
+        setupRecyclerView()
+    }
 
     override fun observeProperty() {
         viewModel.postList.observe(this, Observer {
             loading = true
             vSwipeToRefresh.isRefreshing = false
-            setupRecyclerView(it)
+            postAdapter.submitList(it)
         })
     }
 
-    private fun setupRecyclerView(posts: List<Post>) {
+    private fun setupRecyclerView() {
         //Todo PagedList implementation would be better here
         vPostListRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -37,10 +42,8 @@ class PostListFragment : BaseFragment() {
             }
         })
         vPostListRecycler.layoutManager = mLayoutManager
-        vPostListRecycler.adapter = PostRecyclerViewAdapter(
-            posts,
-            itemClickListener()
-        )
+        postAdapter = PostRecyclerViewAdapter(itemClickListener())
+        vPostListRecycler.adapter = postAdapter
         vSwipeToRefresh.setOnRefreshListener(
             SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
         )
