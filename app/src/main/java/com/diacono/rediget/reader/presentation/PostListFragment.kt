@@ -25,6 +25,10 @@ class PostListFragment : BaseFragment() {
         setupRecyclerView()
     }
 
+    override fun setListeners() {
+        vDismissAll.setOnClickListener { onDismissAllPosts()}
+    }
+
     override fun observeProperty() {
         viewModel.postList.observe(this, Observer {
             loading = true
@@ -41,7 +45,10 @@ class PostListFragment : BaseFragment() {
             }
         })
         vPostListRecycler.layoutManager = mLayoutManager
-        postAdapter = PostRecyclerViewAdapter(this@PostListFragment::onPostClicked, this@PostListFragment::onDismissPostClicked)
+        postAdapter = PostRecyclerViewAdapter(
+            this@PostListFragment::onPostClicked,
+            this@PostListFragment::onDismissPostClicked
+        )
         vPostListRecycler.adapter = postAdapter
         vSwipeToRefresh.setOnRefreshListener(
             SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
@@ -59,6 +66,10 @@ class PostListFragment : BaseFragment() {
 
     private fun nearToLastVisible(): Boolean {
         with(mLayoutManager) { return childCount + findFirstVisibleItemPosition() >= itemCount }
+    }
+
+    private fun onDismissAllPosts() {
+        viewModel.onDismissAllPosts()
     }
 
     private fun onPostClicked(post: Post) {

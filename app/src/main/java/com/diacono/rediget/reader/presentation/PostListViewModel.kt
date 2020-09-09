@@ -94,9 +94,21 @@ class PostListViewModel(
 
     fun onDismissPost(post: Post) {
         mutablePostList.value = mutablePostList.value?.filter { it.name != post.name }
-        if (selectedPost.value?.name == post.name) {
-            mutableSelectedPost.value = null
+        needToRemoveSelectedPost(post)
+    }
+
+    fun onDismissAllPosts() {
+        mutablePostList.value = emptyList()
+        needToRemoveSelectedPost(mutableSelectedPost.value)
+    }
+
+    private fun needToRemoveSelectedPost(post: Post?) {
+        post?.let {
+            if (selectedPost.value?.name == post.name) {
+                mutableSelectedPost.value = null
+            }
         }
+
     }
 
     companion object {

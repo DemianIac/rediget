@@ -91,10 +91,32 @@ class PostListViewModelTest {
     fun `dismissing a post should remove it from the list of posts`() {
         givenValidPostsResponseAmount(POST_LIMIT, REDDIT_DISMISS_RESPONSE)
         givenAViewModel()
-        givenASelectedPostStored(POST_REFRESH_LIST.first())
+        givenASelectedPost(POST_REFRESH_LIST.first())
         whenDismissingAPost(POST_REFRESH_LIST.first())
         thenPostAreReturned(POST_LIST)
         thenSelectedDismissPostIsCleared()
+    }
+
+    @Test
+    fun `dismissing all post should them the list of posts`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenAViewModel()
+        givenASelectedPost(POST_REFRESH_LIST.first())
+        whenDismissAllPosts()
+        thenAllPostsAreDeleted()
+        thenSelectedDismissPostIsCleared()
+    }
+
+    private fun givenASelectedPost(post: Post) {
+        postListViewModel.onSelectedPost(post)
+    }
+
+    private fun thenAllPostsAreDeleted() {
+        postListViewModel.postList.value?.isEmpty()?.let { assertTrue(it) }
+    }
+
+    private fun whenDismissAllPosts() {
+        postListViewModel.onDismissAllPosts()
     }
 
     private fun thenSelectedDismissPostIsCleared() {

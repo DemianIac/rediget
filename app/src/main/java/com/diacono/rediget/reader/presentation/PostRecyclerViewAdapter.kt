@@ -54,7 +54,7 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         onPostClicked: onPostClicked,
         onDismissPostClicked: onDismissPostClicked
     ) {
-        name.text = item.name
+        name.text = item.author
         creation.text = getTimesInHours(item)
         title.text = item.title
         loadThumbnail(item)

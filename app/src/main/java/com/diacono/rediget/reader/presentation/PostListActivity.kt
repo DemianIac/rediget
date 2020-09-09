@@ -25,7 +25,7 @@ class PostListActivity : AppCompatActivity() {
 
     private fun observeProperty() {
         viewModel.selectedPost.observe(this, Observer {
-            if (!isInTwoPaneMode())
+            if (!isInTwoPaneMode() && it != null)
                 moveToSingleDetail()
         })
     }
