@@ -76,8 +76,10 @@ class PostListViewModel(
 
     private fun setMorePostsActionState(response: Response<RedditResponse>) {
         if (response.isSuccessful)
-            requireNotNull(response.body()).let { mutablePostList.value =
-                mutablePostList.value?.plus(createPostList(it)) }
+            requireNotNull(response.body()).let {
+                mutablePostList.value =
+                    mutablePostList.value?.plus(createPostList(it))
+            }
         else
             mutableErrorMessage.value = response.errorBody()?.string()
     }
@@ -88,6 +90,13 @@ class PostListViewModel(
 
     fun refreshPosts() {
         getTopPost(PAGINATION_SIZE)
+    }
+
+    fun onDismissPost(post: Post) {
+        mutablePostList.value = mutablePostList.value?.filter { it.name != post.name }
+        if (selectedPost.value?.name == post.name) {
+            mutableSelectedPost.value = null
+        }
     }
 
     companion object {

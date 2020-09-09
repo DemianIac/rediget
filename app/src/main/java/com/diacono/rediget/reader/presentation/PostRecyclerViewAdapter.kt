@@ -15,9 +15,12 @@ import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
 import java.util.concurrent.TimeUnit
 
+typealias onPostClicked = (Post) -> Unit
+typealias onDismissPostClicked = (Post) -> Unit
 
 class PostRecyclerViewAdapter(
-    private val onClickListener: View.OnClickListener
+    private val onPostClicked: onPostClicked,
+    private val onDismissPostClicked: onDismissPostClicked
 ) : ListAdapter<Post, PostListViewHolder>(
     object : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.name == newItem.name
@@ -31,7 +34,7 @@ class PostRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PostListViewHolder(parent)
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
-        holder.populate(getItem(position), onClickListener)
+        holder.populate(getItem(position), onPostClicked, onDismissPostClicked)
     }
 }
 
@@ -46,13 +49,18 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     private val comments: TextView = itemView.findViewById(R.id.vComments)
     private val itemFrame: View = itemView.findViewById(R.id.vItemFrame)
 
-    fun populate(item: Post, clickListener: View.OnClickListener) {
+    fun populate(
+        item: Post,
+        onPostClicked: onPostClicked,
+        onDismissPostClicked: onDismissPostClicked
+    ) {
         name.text = item.name
         creation.text = getTimesInHours(item)
         title.text = item.title
         loadThumbnail(item)
         comments.text = getCommentsAmount(item)
-        itemFrame.setOnClickListener(clickListener)
+        itemFrame.setOnClickListener { onPostClicked(item) }
+        dismiss.setOnClickListener { onDismissPostClicked(item) }
         itemView.tag = item
     }
 

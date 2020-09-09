@@ -1,7 +1,6 @@
 package com.diacono.rediget.reader.presentation
 
 
-import android.view.View
 import com.diacono.rediget.R
 import com.diacono.rediget.commons.BaseFragment
 import kotlinx.android.synthetic.main.fragment_post_list.*
@@ -17,7 +16,7 @@ class PostListFragment : BaseFragment() {
 
     private val viewModel: PostListViewModel by sharedViewModel()
     private var mLayoutManager: LinearLayoutManager = LinearLayoutManager(context)
-    private lateinit var postAdapter :PostRecyclerViewAdapter
+    private lateinit var postAdapter: PostRecyclerViewAdapter
     private var loading = true
 
     override fun layout() = R.layout.fragment_post_list
@@ -42,7 +41,7 @@ class PostListFragment : BaseFragment() {
             }
         })
         vPostListRecycler.layoutManager = mLayoutManager
-        postAdapter = PostRecyclerViewAdapter(itemClickListener())
+        postAdapter = PostRecyclerViewAdapter(this@PostListFragment::onPostClicked, this@PostListFragment::onDismissPostClicked)
         vPostListRecycler.adapter = postAdapter
         vSwipeToRefresh.setOnRefreshListener(
             SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
@@ -62,9 +61,12 @@ class PostListFragment : BaseFragment() {
         with(mLayoutManager) { return childCount + findFirstVisibleItemPosition() >= itemCount }
     }
 
-    private fun itemClickListener() = View.OnClickListener { v ->
-        val item = v.tag as Post
-        viewModel.onSelectedPost(item)
+    private fun onPostClicked(post: Post) {
+        viewModel.onSelectedPost(post)
+    }
+
+    private fun onDismissPostClicked(post: Post) {
+        viewModel.onDismissPost(post)
     }
 
     companion object {

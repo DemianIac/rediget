@@ -18,6 +18,7 @@ import io.reactivex.Single
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
@@ -86,12 +87,30 @@ class PostListViewModelTest {
         thenPostAreReturned(POST_REFRESH_LIST)
     }
 
+    @Test
+    fun `dismissing a post should remove it from the list of posts`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_DISMISS_RESPONSE)
+        givenAViewModel()
+        givenASelectedPostStored(POST_REFRESH_LIST.first())
+        whenDismissingAPost(POST_REFRESH_LIST.first())
+        thenPostAreReturned(POST_LIST)
+        thenSelectedDismissPostIsCleared()
+    }
+
+    private fun thenSelectedDismissPostIsCleared() {
+        assertTrue(postListViewModel.selectedPost.value == null)
+    }
+
+    private fun whenDismissingAPost(post: Post) {
+        postListViewModel.onDismissPost(post)
+    }
+
     private fun whenRefreshIsDone() {
         postListViewModel.refreshPosts()
     }
 
     private fun thenMorePostAreReturned(postList: List<Post>) {
-        assertEquals(postList+postList, postListViewModel.postList.value)
+        assertEquals(postList + postList, postListViewModel.postList.value)
     }
 
     private fun whenMorePostAreLoaded(limit: Int, after: String) {
@@ -175,7 +194,7 @@ class PostListViewModelTest {
             RedditPostResponse(
                 "superhero",
                 "Test",
-                "Post",
+                "Post list",
                 "Demian",
                 null,
                 0,
@@ -188,7 +207,7 @@ class PostListViewModelTest {
             Post(
                 "superhero",
                 "Test",
-                "Post",
+                "Post list",
                 "Demian",
                 null,
                 0,
@@ -200,27 +219,46 @@ class PostListViewModelTest {
             RedditPostResponse(
                 "superhero",
                 "Test",
-                "Post",
+                "Post refresh",
                 "Carl",
                 null,
                 0,
                 123L
             )
 
-        val REDDIT_REFRESH_POST_RESPONSE=
-            RedditResponse(RedditDataResponse(listOf(RedditChildrenResponse(redditRefreshPostResponse))))
+        val REDDIT_REFRESH_POST_RESPONSE =
+            RedditResponse(
+                RedditDataResponse(
+                    listOf(
+                        RedditChildrenResponse(
+                            redditRefreshPostResponse
+                        )
+                    )
+                )
+            )
 
         val POST_REFRESH_LIST = listOf(
             Post(
                 "superhero",
                 "Test",
-                "Post",
+                "Post refresh",
                 "Carl",
                 null,
                 0,
                 123L
             )
         )
+
+        val REDDIT_DISMISS_RESPONSE =
+            RedditResponse(
+                RedditDataResponse(
+                    listOf(
+                        RedditChildrenResponse(redditRefreshPostResponse), RedditChildrenResponse(
+                            redditPostResponse
+                        )
+                    )
+                )
+            )
 
     }
 

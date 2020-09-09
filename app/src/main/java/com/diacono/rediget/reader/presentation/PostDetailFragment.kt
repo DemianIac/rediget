@@ -25,7 +25,13 @@ class PostDetailFragment : BaseFragment() {
             vNameDetail.text = it.name
             vTitleDetail.text = it.title
             loadThumbnail(it)
-        }
+        }?: setEmptyDetail()
+    }
+
+    private fun setEmptyDetail() {
+        vNameDetail.text = ""
+        vTitleDetail.text = ""
+        vThumbnailDetail.setImageResource(0)
     }
 
     private fun loadThumbnail(it: Post) =
