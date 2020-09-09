@@ -5,6 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.diacono.rediget.commons.changeUnreadStatus
+import com.diacono.rediget.commons.minusAssign
+import com.diacono.rediget.commons.plusAssign
+import com.diacono.rediget.commons.toPost
 import com.diacono.rediget.reader.domain.core.actions.GetMoreTopPosts
 import com.diacono.rediget.reader.domain.core.actions.GetTopPosts
 import com.diacono.rediget.reader.domain.model.Post
@@ -121,29 +125,3 @@ class PostListViewModel(
     }
 
 }
-
-private fun MutableLiveData<List<Post>>.changeUnreadStatus(post: Post, unread: Boolean) {
-    val value = this.value ?: emptyList()
-    value.first { it.name == post.name }.unread = unread
-    this.value = value
-}
-
-operator fun <T> MutableLiveData<List<T>>.plusAssign(items: List<T>) {
-    val value = this.value ?: emptyList()
-    this.value = value + items
-}
-
-operator fun MutableLiveData<List<Post>>.minusAssign(item: Post) {
-    val value = this.value ?: emptyList()
-    this.value = value.minus(item)
-}
-
-private fun RedditPostResponse.toPost() = Post(
-    this.subreddit,
-    this.title,
-    this.name,
-    this.author,
-    this.thumbnail,
-    this.comments,
-    this.created
-)
