@@ -1,15 +1,29 @@
 package com.diacono.rediget.reader.presentation
 
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.diacono.rediget.R
 import com.diacono.rediget.commons.BaseFragment
+import com.diacono.rediget.commons.ImageDownloader
 import com.diacono.rediget.reader.domain.model.Post
 import kotlinx.android.synthetic.main.item_post_detail.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.io.File
+import java.net.URL
+
 
 class PostDetailFragment : BaseFragment() {
 
@@ -21,15 +35,42 @@ class PostDetailFragment : BaseFragment() {
         viewModel.selectedPost.observe(viewLifecycleOwner, Observer {
             setupData(it)
         })
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            showMessage(it)
+        })
     }
 
     private fun setupData(post: Post?) {
         post?.let { post ->
-            vNameDetail.text = post.name
+            vNameDetail.text = post.author
             vTitleDetail.text = post.title
             vThumbnailDetail.setOnClickListener { onThumbnailDetailClicked(post.thumbnail) }
             loadThumbnail(post)
+            vDownloadThumbnail.isVisible = true
         } ?: setEmptyDetail()
+    }
+
+    override fun setListeners() {
+        vDownloadThumbnail.setOnClickListener {
+            viewModel.selectedPost.value?.let {
+                saveImage(it)
+            }
+        }
+    }
+
+    private fun saveImage(post: Post) {
+        post.thumbnail?.let {
+            ImageDownloader.saveImage(requireContext(), it, post.author)
+            showMessage(resources.getString(R.string.downloading_image))
+        }
+    }
+
+    private fun showMessage(string: String) {
+        Toast.makeText(
+            requireContext(),
+            string,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun onThumbnailDetailClicked(thumbnail: String?) {
@@ -47,6 +88,7 @@ class PostDetailFragment : BaseFragment() {
         vNameDetail.text = ""
         vTitleDetail.text = ""
         vThumbnailDetail.setImageResource(0)
+        vDownloadThumbnail.isVisible = false
     }
 
     private fun loadThumbnail(it: Post) {

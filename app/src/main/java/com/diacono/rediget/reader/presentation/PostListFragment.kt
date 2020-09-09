@@ -3,6 +3,7 @@ package com.diacono.rediget.reader.presentation
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,9 @@ class PostListFragment : BaseFragment() {
             loading = true
             vSwipeToRefresh.isRefreshing = false
             postAdapter.submitList(it)
+        })
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            showMessage(it)
         })
     }
 
@@ -81,6 +85,14 @@ class PostListFragment : BaseFragment() {
 
     private fun onThumbnailPostClicked(thumbnail: String?) {
         thumbnail?.let { openBrowser(thumbnail) }
+    }
+
+    private fun showMessage(string: String) {
+        Toast.makeText(
+            requireContext(),
+            string,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun openBrowser(thumbnail: String) {

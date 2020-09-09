@@ -6,4 +6,6 @@
     <string name="content_image">Post image</string>
     <string name="dimiss_all">Dismiss all posts</string>
     <string name="unread_notification">Unread notification</string>
+    <string name="download_image">Download image</string>
+    <string name="downloading_image">Image started to download</string>
 </resources>
