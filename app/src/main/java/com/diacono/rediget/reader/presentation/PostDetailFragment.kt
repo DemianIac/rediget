@@ -4,11 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.diacono.rediget.R
 import com.diacono.rediget.commons.BaseFragment
 import com.diacono.rediget.reader.domain.model.Post
 import kotlinx.android.synthetic.main.item_post_detail.*
-import kotlinx.android.synthetic.main.item_post_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PostDetailFragment : BaseFragment() {
@@ -49,10 +49,15 @@ class PostDetailFragment : BaseFragment() {
         vThumbnailDetail.setImageResource(0)
     }
 
-    private fun loadThumbnail(it: Post) =
-        Glide.with(requireContext()).load(it.thumbnail)
+    private fun loadThumbnail(it: Post) {
+        val roundedCorners =
+            RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.thumbnail_corner_radious))
+        Glide.with(requireContext())
+            .load(it.thumbnail)
             .fitCenter()
+            .transform(roundedCorners)
             .into(vThumbnailDetail)
+    }
 
     companion object {
         const val VALID_URL = "https://"

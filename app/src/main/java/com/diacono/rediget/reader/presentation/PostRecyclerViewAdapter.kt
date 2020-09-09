@@ -1,6 +1,7 @@
 package com.diacono.rediget.reader.presentation
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.target.ViewTarget
 import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
 import java.util.concurrent.TimeUnit
@@ -42,7 +45,12 @@ class PostRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PostListViewHolder(parent)
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
-        holder.populate(getItem(position), onPostClicked, onDismissPostClicked, onThumbnailPostClicked)
+        holder.populate(
+            getItem(position),
+            onPostClicked,
+            onDismissPostClicked,
+            onThumbnailPostClicked
+        )
     }
 
     override fun submitList(@Nullable list: List<Post>?) {
@@ -93,9 +101,13 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         )
     }
 
-    private fun loadThumbnail(
-        item: Post
-    ) = Glide.with(itemView.context).load(item.thumbnail)
-        .fitCenter()
-        .into(thumbnail)
+    private fun loadThumbnail(item: Post) {
+        val roundedCorners =
+            RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.thumbnail_corner_radious))
+        Glide.with(itemView.context)
+            .load(item.thumbnail)
+            .fitCenter()
+            .transform(roundedCorners)
+            .into(thumbnail)
+    }
 }
