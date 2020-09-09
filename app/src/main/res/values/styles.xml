@@ -16,4 +16,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Item"/>
+
+    <style name="Item.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+
+    <style name="Item.Dismiss" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+
+    <style name="Item.Comments" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">@dimen/text_size_12</item>
+    </style>
 </resources>

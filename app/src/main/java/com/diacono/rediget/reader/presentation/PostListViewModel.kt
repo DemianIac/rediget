@@ -24,6 +24,7 @@ class PostListViewModel(
     val moreTopPostsAction: GetMoreTopPosts
 ) : ViewModel() {
 
+    //Todo PagedList implementation would be better here
     private var mutablePostList = MutableLiveData<List<Post>>()
     val postList: LiveData<List<Post>> = mutablePostList
     private var mutableErrorMessage = MutableLiveData<String>()

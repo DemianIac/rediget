@@ -3,72 +3,81 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vItemFrame"
+    android:background="@color/soft_pink"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/vName"
+        style="@style/Item.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_8dp"
+        android:layout_marginTop="@dimen/spacing_8dp"
+        android:layout_marginBottom="@dimen/spacing_8dp"
         android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"
-        tools:text="Elon Musck" />
+        app:layout_constraintTop_toBottomOf="@+id/vThumbnail"
+        tools:text="By: Elon Musck" />
 
     <TextView
         android:id="@+id/vCreation"
+        style="@style/Item.Comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        app:layout_constraintEnd_toStartOf="@+id/vUnreadNotification"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintBottom_toBottomOf="@+id/vComments"
+        app:layout_constraintEnd_toEndOf="@+id/vTitle"
+        app:layout_constraintTop_toTopOf="@+id/vComments"
         tools:text="88 hours ago" />
 
     <ImageView
         android:id="@+id/vThumbnail"
-        android:layout_width="@dimen/thumnail_size"
-        android:layout_height="@dimen/thumnail_size"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/thumbnail_size"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_8dp"
+        android:clickable="false"
+        android:contentDescription="@string/content_image"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/vName"
-        tools:src="@tools:sample/avatars"
-        android:contentDescription="@string/content_image" />
+        app:layout_constraintTop_toBottomOf="@+id/vUnreadNotification"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/vTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/Item.Title"
+        android:layout_width="295dp"
+        android:layout_height="39dp"
         android:layout_marginStart="@dimen/spacing_16dp"
         android:clickable="false"
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintBottom_toBottomOf="@+id/vThumbnail"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintEnd_toStartOf="@+id/vDismiss"
         app:layout_constraintStart_toEndOf="@+id/vThumbnail"
         app:layout_constraintTop_toTopOf="@+id/vThumbnail"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
 
-    <Button
+    <ImageView
         android:id="@+id/vDismiss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_8dp"
-        android:text="@string/dismiss_post"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/vThumbnail" />
+        android:layout_marginBottom="@dimen/spacing_8dp"
+        android:src="@drawable/dismiss_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3" />
 
     <TextView
         android:id="@+id/vComments"
+        style="@style/Item.Comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_4dp"
         android:clickable="false"
-        app:layout_constraintBottom_toBottomOf="@+id/vDismiss"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/vDismiss"
+        app:layout_constraintStart_toStartOf="@+id/vTitle"
+        app:layout_constraintTop_toBottomOf="@+id/vTitle"
         tools:text="99999 Comments" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -92,22 +101,22 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/spacing_8dp" />
 
+    <ImageView
+        android:id="@+id/vUnreadNotification"
+        android:layout_width="@dimen/spacing_8dp"
+        android:layout_height="@dimen/spacing_8dp"
+        android:layout_marginTop="@dimen/spacing_4dp"
+        android:contentDescription="@string/unread_notification"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:srcCompat="@drawable/circle_unread_notification" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
-
-    <ImageView
-        android:id="@+id/vUnreadNotification"
-        android:layout_width="@dimen/spacing_8dp"
-        android:layout_height="@dimen/spacing_8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/vCreation"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="@+id/vCreation"
-        app:srcCompat="@drawable/circle_unread_notification"
-        android:contentDescription="@string/unread_notification" />
+        app:layout_constraintGuide_end="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

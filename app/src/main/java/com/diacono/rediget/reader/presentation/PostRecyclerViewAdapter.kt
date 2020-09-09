@@ -20,6 +20,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.ViewTarget
 import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
+import kotlinx.android.synthetic.main.item_post_list.view.*
 import java.util.concurrent.TimeUnit
 
 
@@ -61,14 +62,6 @@ class PostRecyclerViewAdapter(
 class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_post_list, parent, false)
 ) {
-    private val name: TextView = itemView.findViewById(R.id.vName)
-    private val creation: TextView = itemView.findViewById(R.id.vCreation)
-    private val title: TextView = itemView.findViewById(R.id.vTitle)
-    private val thumbnail: ImageView = itemView.findViewById(R.id.vThumbnail)
-    private val dismiss: Button = itemView.findViewById(R.id.vDismiss)
-    private val comments: TextView = itemView.findViewById(R.id.vComments)
-    private val itemFrame: View = itemView.findViewById(R.id.vItemFrame)
-    private val unreadNotification: View = itemView.findViewById(R.id.vUnreadNotification)
 
     fun populate(
         item: Post,
@@ -76,16 +69,18 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         onDismissPostClicked: onDismissPostClicked,
         onThumbnailPostClicked: onThumbnailPostClicked
     ) {
-        name.text = item.author
-        creation.text = getTimesInHours(item)
-        title.text = item.title
-        loadThumbnail(item)
-        thumbnail.setOnClickListener { onThumbnailPostClicked(item.thumbnail) }
-        comments.text = getCommentsAmount(item)
-        itemFrame.setOnClickListener { onPostClicked(item) }
-        dismiss.setOnClickListener { onDismissPostClicked(item) }
-        unreadNotification.isVisible = item.unread
-        itemView.tag = item
+        with(itemView) {
+            vName.text = resources.getString(R.string.by_author, item.author)
+            vCreation.text = getTimesInHours(item)
+            vTitle.text = item.title
+            loadThumbnail(item)
+            vThumbnail.setOnClickListener { onThumbnailPostClicked(item.thumbnail) }
+            vComments.text = getCommentsAmount(item)
+            vItemFrame.setOnClickListener { onPostClicked(item) }
+            vDismiss.setOnClickListener { onDismissPostClicked(item) }
+            vUnreadNotification.isVisible = item.unread
+            tag = item
+        }
     }
 
     private fun getCommentsAmount(
@@ -108,6 +103,6 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             .load(item.thumbnail)
             .fitCenter()
             .transform(roundedCorners)
-            .into(thumbnail)
+            .into(itemView.vThumbnail)
     }
 }

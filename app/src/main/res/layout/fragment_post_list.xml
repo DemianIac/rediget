@@ -27,7 +27,9 @@
 
     <Button
         android:id="@+id/vDismissAll"
+        style="@style/Item.Dismiss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/dismiss_red"
         android:text="@string/dimiss_all" />
 </LinearLayout>

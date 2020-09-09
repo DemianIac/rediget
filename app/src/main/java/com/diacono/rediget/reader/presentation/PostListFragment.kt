@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,10 +29,6 @@ class PostListFragment : BaseFragment() {
         setupRecyclerView()
     }
 
-    override fun setListeners() {
-        vDismissAll.setOnClickListener { onDismissAllPosts() }
-    }
-
     override fun observeProperty() {
         viewModel.postList.observe(this, Observer {
             loading = true
@@ -43,13 +40,19 @@ class PostListFragment : BaseFragment() {
         })
     }
 
-    private fun setupRecyclerView() {
-        //Todo PagedList implementation would be better here
+    override fun setListeners() {
+        vDismissAll.setOnClickListener { onDismissAllPosts() }
         vPostListRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 loadMoreIfNeeded(dy)
             }
         })
+        vSwipeToRefresh.setOnRefreshListener(
+            SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
+        )
+    }
+
+    private fun setupRecyclerView() {
         vPostListRecycler.layoutManager = mLayoutManager
         postAdapter = PostRecyclerViewAdapter(
             this@PostListFragment::onPostClicked,
@@ -57,9 +60,11 @@ class PostListFragment : BaseFragment() {
             this@PostListFragment::onThumbnailPostClicked
         )
         vPostListRecycler.adapter = postAdapter
-        vSwipeToRefresh.setOnRefreshListener(
-            SwipeRefreshLayout.OnRefreshListener { viewModel.refreshPosts() }
+        val dividerItemDecoration = DividerItemDecoration(
+            requireContext(),
+            mLayoutManager.orientation
         )
+        vPostListRecycler.addItemDecoration(dividerItemDecoration)
     }
 
     private fun loadMoreIfNeeded(dy: Int) {
