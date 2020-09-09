@@ -11,5 +11,6 @@ data class Post(
     @SerializedName("author") val author: String,
     @SerializedName("thumbnail") val thumbnail: String?,
     @SerializedName("num_comments") val comments: Int,
-    @SerializedName("created_utc") val created: Long
+    @SerializedName("created_utc") val created: Long,
+    @SerializedName("unread") var unread: Boolean = true
 ): Serializable

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.Nullable
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.diacono.rediget.R
 import com.diacono.rediget.reader.domain.model.Post
 import java.util.concurrent.TimeUnit
+
 
 typealias onPostClicked = (Post) -> Unit
 typealias onDismissPostClicked = (Post) -> Unit
@@ -27,7 +30,8 @@ class PostRecyclerViewAdapter(
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
             return oldItem.name == newItem.name &&
-                    oldItem.created == newItem.created
+                    oldItem.created == newItem.created &&
+                    oldItem.unread == newItem.unread
         }
     }) {
 
@@ -35,6 +39,10 @@ class PostRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
         holder.populate(getItem(position), onPostClicked, onDismissPostClicked)
+    }
+
+    override fun submitList(@Nullable list: List<Post>?) {
+        super.submitList(list?.apply { if (itemCount == list.size) notifyDataSetChanged() })
     }
 }
 
@@ -48,6 +56,7 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     private val dismiss: Button = itemView.findViewById(R.id.vDismiss)
     private val comments: TextView = itemView.findViewById(R.id.vComments)
     private val itemFrame: View = itemView.findViewById(R.id.vItemFrame)
+    private val unreadNotification: View = itemView.findViewById(R.id.vUnreadNotification)
 
     fun populate(
         item: Post,
@@ -61,6 +70,7 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         comments.text = getCommentsAmount(item)
         itemFrame.setOnClickListener { onPostClicked(item) }
         dismiss.setOnClickListener { onDismissPostClicked(item) }
+        unreadNotification.isVisible = item.unread
         itemView.tag = item
     }
 

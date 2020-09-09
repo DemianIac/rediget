@@ -56,7 +56,7 @@ class PostListActivity : AppCompatActivity() {
     private fun isInTwoPaneMode() =
         findViewById<NestedScrollView>(R.id.post_detail_container) != null
 
-    inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
+    private inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
         val fragmentTransaction = beginTransaction()
         fragmentTransaction.func()
         fragmentTransaction.commit()

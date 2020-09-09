@@ -40,13 +40,13 @@ class PostListViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                setActionState(it)
+                setInitialPostList(it)
             }, { t ->
                 mutableErrorMessage.value = t!!.message
             })
     }
 
-    private fun setActionState(response: Response<RedditResponse>) {
+    private fun setInitialPostList(response: Response<RedditResponse>) {
         if (response.isSuccessful)
             requireNotNull(response.body()).let { mutablePostList.value = createPostList(it) }
         else
@@ -60,6 +60,11 @@ class PostListViewModel(
     fun onSelectedPost(selectedPost: Post) {
         mutableSelectedPost.value = selectedPost
         savedStateHandle.set(SELECTED_POST, selectedPost)
+        setUnreadPost(selectedPost, false)
+    }
+
+    private fun setUnreadPost(post: Post, unread: Boolean) {
+        mutablePostList.changeUnreadStatus(post, unread)
     }
 
     @SuppressLint("CheckResult")
@@ -77,8 +82,7 @@ class PostListViewModel(
     private fun setMorePostsActionState(response: Response<RedditResponse>) {
         if (response.isSuccessful)
             requireNotNull(response.body()).let {
-                mutablePostList.value =
-                    mutablePostList.value?.plus(createPostList(it))
+                mutablePostList.plusAssign(createPostList(it))
             }
         else
             mutableErrorMessage.value = response.errorBody()?.string()
@@ -93,7 +97,7 @@ class PostListViewModel(
     }
 
     fun onDismissPost(post: Post) {
-        mutablePostList.value = mutablePostList.value?.filter { it.name != post.name }
+        mutablePostList.minusAssign(post)
         needToRemoveSelectedPost(post)
     }
 
@@ -116,6 +120,22 @@ class PostListViewModel(
         const val SELECTED_POST = "SELECTED_POST"
     }
 
+}
+
+private fun MutableLiveData<List<Post>>.changeUnreadStatus(post: Post, unread: Boolean) {
+    val value = this.value ?: emptyList()
+    value.first { it.name == post.name }.unread = unread
+    this.value = value
+}
+
+operator fun <T> MutableLiveData<List<T>>.plusAssign(items: List<T>) {
+    val value = this.value ?: emptyList()
+    this.value = value + items
+}
+
+operator fun MutableLiveData<List<Post>>.minusAssign(item: Post) {
+    val value = this.value ?: emptyList()
+    this.value = value.minus(item)
 }
 
 private fun RedditPostResponse.toPost() = Post(
