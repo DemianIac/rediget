@@ -1,15 +1,17 @@
 package com.diacono.rediget.reader.presentation
 
 
-import com.diacono.rediget.R
-import com.diacono.rediget.commons.BaseFragment
-import kotlinx.android.synthetic.main.fragment_post_list.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.diacono.rediget.R
+import com.diacono.rediget.commons.BaseFragment
 import com.diacono.rediget.reader.domain.model.Post
+import kotlinx.android.synthetic.main.fragment_post_list.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class PostListFragment : BaseFragment() {
@@ -26,7 +28,7 @@ class PostListFragment : BaseFragment() {
     }
 
     override fun setListeners() {
-        vDismissAll.setOnClickListener { onDismissAllPosts()}
+        vDismissAll.setOnClickListener { onDismissAllPosts() }
     }
 
     override fun observeProperty() {
@@ -47,7 +49,8 @@ class PostListFragment : BaseFragment() {
         vPostListRecycler.layoutManager = mLayoutManager
         postAdapter = PostRecyclerViewAdapter(
             this@PostListFragment::onPostClicked,
-            this@PostListFragment::onDismissPostClicked
+            this@PostListFragment::onDismissPostClicked,
+            this@PostListFragment::onThumbnailPostClicked
         )
         vPostListRecycler.adapter = postAdapter
         vSwipeToRefresh.setOnRefreshListener(
@@ -76,11 +79,23 @@ class PostListFragment : BaseFragment() {
         viewModel.onSelectedPost(post)
     }
 
+    private fun onThumbnailPostClicked(thumbnail: String?) {
+        thumbnail?.let { openBrowser(thumbnail) }
+    }
+
+    private fun openBrowser(thumbnail: String) {
+        if (thumbnail.startsWith(VALID_URL)) {
+            val intent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(thumbnail) }
+            startActivity(intent)
+        }
+    }
+
     private fun onDismissPostClicked(post: Post) {
         viewModel.onDismissPost(post)
     }
 
     companion object {
+        const val VALID_URL = "https://"
         fun newInstance() = PostListFragment()
     }
 }

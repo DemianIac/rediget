@@ -1,5 +1,6 @@
 package com.diacono.rediget.reader.presentation
 
+import android.content.Intent
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,10 +22,12 @@ import java.util.concurrent.TimeUnit
 
 typealias onPostClicked = (Post) -> Unit
 typealias onDismissPostClicked = (Post) -> Unit
+typealias onThumbnailPostClicked = (String?) -> Unit
 
 class PostRecyclerViewAdapter(
     private val onPostClicked: onPostClicked,
-    private val onDismissPostClicked: onDismissPostClicked
+    private val onDismissPostClicked: onDismissPostClicked,
+    private val onThumbnailPostClicked: onThumbnailPostClicked
 ) : ListAdapter<Post, PostListViewHolder>(
     object : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.name == newItem.name
@@ -38,7 +42,7 @@ class PostRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PostListViewHolder(parent)
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
-        holder.populate(getItem(position), onPostClicked, onDismissPostClicked)
+        holder.populate(getItem(position), onPostClicked, onDismissPostClicked, onThumbnailPostClicked)
     }
 
     override fun submitList(@Nullable list: List<Post>?) {
@@ -61,12 +65,14 @@ class PostListViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     fun populate(
         item: Post,
         onPostClicked: onPostClicked,
-        onDismissPostClicked: onDismissPostClicked
+        onDismissPostClicked: onDismissPostClicked,
+        onThumbnailPostClicked: onThumbnailPostClicked
     ) {
         name.text = item.author
         creation.text = getTimesInHours(item)
         title.text = item.title
         loadThumbnail(item)
+        thumbnail.setOnClickListener { onThumbnailPostClicked(item.thumbnail) }
         comments.text = getCommentsAmount(item)
         itemFrame.setOnClickListener { onPostClicked(item) }
         dismiss.setOnClickListener { onDismissPostClicked(item) }
