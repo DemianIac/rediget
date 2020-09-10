@@ -37,7 +37,7 @@ class PostListActivity : AppCompatActivity() {
             }
         }
         supportFragmentManager.inTransaction {
-            replace(R.id.activity_container, PostListFragment.newInstance())
+            replace(R.id.post_list_container, PostListFragment.newInstance())
         }
     }
 
@@ -49,7 +49,7 @@ class PostListActivity : AppCompatActivity() {
 
     private fun moveToSingleDetail() {
         supportFragmentManager.inTransaction {
-            add(R.id.activity_container, PostDetailFragment.newInstance()).addToBackStack(null)
+            add(R.id.post_list_container, PostDetailFragment.newInstance()).addToBackStack(null)
         }
     }
 

@@ -4,8 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/soft_pink"
     android:layout_height="match_parent"
-    android:background="@color/white"
+
     tools:context=".reader.presentation.PostListActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,11 +16,12 @@
 
         <TextView
             android:id="@+id/vNameDetail"
+            style="@style/Item.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toTopOf="@+id/guideline6"
-            tools:text="Elon Musk" />
+            tools:text="By: Elon Musk" />
 
         <ImageView
             android:id="@+id/vThumbnailDetail"

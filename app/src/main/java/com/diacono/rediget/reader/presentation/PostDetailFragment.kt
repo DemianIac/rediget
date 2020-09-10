@@ -42,7 +42,7 @@ class PostDetailFragment : BaseFragment() {
 
     private fun setupData(post: Post?) {
         post?.let { post ->
-            vNameDetail.text = post.author
+            vNameDetail.text = resources.getString(R.string.by_author, post.author)
             vTitleDetail.text = post.title
             vThumbnailDetail.setOnClickListener { onThumbnailDetailClicked(post.thumbnail) }
             loadThumbnail(post)
