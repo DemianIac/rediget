@@ -1,17 +1,20 @@
-# Rediget
+# Rediget  
+(An smart combination of Reddit an Deviget, you see?)
 
-An small path of actions
+This is an example of application to read Reddit posts from the [top](https://www.reddit.com/top) chart.
+
+### Some of the work done in this app
 
 - Base project from a master/detail flow
-- Set up bootstrap project
 - Create action to get posts from server
 - Pagination
-- Hook to view
-- Create a basic UI with detail.
 - Save and restore states
 - Read and unread check
 - Dismiss buttons
-- Full screen of images and save to gallery
+- Full screen of images (on browser) and save to gallery
 - Pull to refresh
-- Better UI/UX
+- Landscape support (fixed just to landscape and not to w600dp for tablets 
+  to allow testing in a normal phone)
 
+
+![Demo gif](https://github.com/DemianIac/rediget/blob/master/demo/rediget.gif)
