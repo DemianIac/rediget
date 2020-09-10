@@ -57,7 +57,7 @@ class PostListViewModelTest {
     fun `adding a selected post should update de live data`() {
         givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
         givenAViewModel()
-        whenSettingASelectedPost(POST_LIST.first())
+        whenSelectingAPost(POST_LIST.first())
         thenPostIsSelected(POST_LIST.first())
     }
 
@@ -105,6 +105,35 @@ class PostListViewModelTest {
         whenDismissAllPosts()
         thenAllPostsAreDeleted()
         thenSelectedDismissPostIsCleared()
+    }
+
+    @Test
+    fun `selecting a post should persist the reading status`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenAViewModel()
+        whenSelectingAPost(POST_LIST.first())
+        thenReadPostIsPersisted(POST_LIST.first().name)
+    }
+
+    @Test
+    fun `retrieving data should match de unread status before updating the list of posts`() {
+        givenValidPostsResponseAmount(POST_LIMIT, REDDIT_POST_RESPONSE)
+        givenViewedList(POST_LIST.first().name)
+        givenAViewModel()
+        whenGettingTopPost(POST_LIMIT)
+        thenPostListHasUpdatedUnreadStatus(POST_LIST.first().name)
+    }
+
+    private fun thenPostListHasUpdatedUnreadStatus(name: String) {
+        assertTrue(postListViewModel.postList.value?.first{it.name == name}?.unread == false)
+    }
+
+    private fun givenViewedList(name: String) {
+        whenever(savedStateHandle.get<ArrayList<String>>(PostListViewModel.VIEWED_POSTS)).thenReturn(arrayListOf(name))
+    }
+
+    private fun thenReadPostIsPersisted(name: String) {
+        assertTrue(postListViewModel.viewedPosts.contains(name))
     }
 
     private fun givenASelectedPost(post: Post) {
@@ -161,7 +190,7 @@ class PostListViewModelTest {
         assertEquals(selectedPost, postListViewModel.selectedPost.value)
     }
 
-    private fun whenSettingASelectedPost(selectedPost: Post) {
+    private fun whenSelectingAPost(selectedPost: Post) {
         postListViewModel.onSelectedPost(selectedPost)
     }
 

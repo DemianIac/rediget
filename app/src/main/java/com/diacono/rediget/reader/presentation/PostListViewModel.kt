@@ -32,10 +32,16 @@ class PostListViewModel(
     private var mutableSelectedPost = MutableLiveData<Post>()
     val selectedPost: LiveData<Post> = mutableSelectedPost
 
+    var viewedPosts = arrayListOf<String>()
+
     init {
         getTopPost(PAGINATION_SIZE)
+        //At this point I would prefer to store data in a room database
         savedStateHandle.get<Post>(SELECTED_POST)?.let {
             onSelectedPost(it)
+        }
+        savedStateHandle.get<ArrayList<String>>(VIEWED_POSTS)?.let {
+            viewedPosts = it
         }
     }
 
@@ -58,13 +64,15 @@ class PostListViewModel(
             mutableErrorMessage.value = response.errorBody()?.string()
     }
 
-    private fun createPostList(redditResponse: RedditResponse): List<Post> {
-        return redditResponse.data.children.map { it.data.toPost() }
-    }
+    private fun createPostList(redditResponse: RedditResponse) =
+        redditResponse.data.children.map { it.data.toPost(isUnreadPost(it.data)) }
+
+    private fun isUnreadPost(post: RedditPostResponse) = !viewedPosts.contains(post.name)
 
     fun onSelectedPost(selectedPost: Post) {
         mutableSelectedPost.value = selectedPost
         savedStateHandle.set(SELECTED_POST, selectedPost)
+        viewedPosts.add(selectedPost.name)
         setUnreadPost(selectedPost, false)
     }
 
@@ -117,12 +125,16 @@ class PostListViewModel(
                 mutableSelectedPost.value = null
             }
         }
+    }
 
+    override fun onCleared() {
+        savedStateHandle.set(VIEWED_POSTS, viewedPosts)
     }
 
     companion object {
         const val PAGINATION_SIZE = 10
         const val SELECTED_POST = "SELECTED_POST"
+        const val VIEWED_POSTS = "VIEWED_POST"
     }
 
 }

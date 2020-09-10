@@ -20,12 +20,13 @@ fun MutableLiveData<List<Post>>.minusAssign(item: Post) {
     this.value = value.minus(item)
 }
 
-fun RedditPostResponse.toPost() = Post(
+fun RedditPostResponse.toPost(unreadPost: Boolean) = Post(
     this.subreddit,
     this.title,
     this.name,
     this.author,
     this.thumbnail,
     this.comments,
-    this.created
+    this.created,
+    unreadPost
 )
