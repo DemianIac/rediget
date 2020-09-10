@@ -6,7 +6,7 @@ import com.diacono.rediget.reader.infraestructure.response.RedditPostResponse
 
 fun MutableLiveData<List<Post>>.changeUnreadStatus(post: Post, unread: Boolean) {
     val value = this.value ?: emptyList()
-    value.first { it.name == post.name }.unread = unread
+    value.find { it.name == post.name }?.unread = unread
     this.value = value
 }
 

@@ -92,7 +92,7 @@ class PostListViewModelTest {
         givenValidPostsResponseAmount(POST_LIMIT, REDDIT_DISMISS_RESPONSE)
         givenAViewModel()
         givenASelectedPost(POST_REFRESH_LIST.first())
-        whenDismissingAPost(POST_REFRESH_LIST.first())
+        whenDismissingAPost(POST_REFRESH_VIEWED_LIST.first())
         thenPostAreReturned(POST_LIST)
         thenSelectedDismissPostIsCleared()
     }
@@ -268,6 +268,19 @@ class PostListViewModelTest {
                 null,
                 0,
                 123L
+            )
+        )
+
+        val POST_REFRESH_VIEWED_LIST = listOf(
+            Post(
+                "superhero",
+                "Test",
+                "Post refresh",
+                "Carl",
+                null,
+                0,
+                123L,
+                false
             )
         )
 
