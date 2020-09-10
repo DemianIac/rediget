@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.diacono.rediget.R
 
 object ImageDownloader {
 
@@ -39,7 +40,7 @@ object ImageDownloader {
             context.contentResolver,
             resource,
             title,
-            "Image of $title"
+            context.resources.getString(R.string.download_description,title)
         )
     }
 

@@ -2,6 +2,11 @@ package com.diacono.rediget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
+import com.diacono.rediget.dummys.PostListViewModelTestFactory.createDummyPostList
+import com.diacono.rediget.dummys.PostListViewModelTestFactory.createDummyPostRefresh
+import com.diacono.rediget.dummys.PostListViewModelTestFactory.createDummyPostRefreshViewed
+import com.diacono.rediget.dummys.PostListViewModelTestFactory.createDummyRedditListResponse
+import com.diacono.rediget.dummys.PostListViewModelTestFactory.createDummyRedditPostRefreshResponse
 import com.diacono.rediget.reader.domain.core.actions.GetMoreTopPosts
 import com.diacono.rediget.reader.domain.core.actions.GetTopPosts
 import com.diacono.rediget.reader.domain.model.Post
@@ -242,42 +247,27 @@ class PostListViewModelTest {
         val POST_ERROR_MESSAGE = TopPostException().message
 
         private val redditPostResponse =
-            RedditPostResponse(
-                "superhero",
-                "Test",
-                "Post list",
-                "Demian",
-                null,
-                0,
-                123L
-            )
+            createDummyRedditListResponse()
+
         val REDDIT_POST_RESPONSE =
             RedditResponse(RedditDataResponse(listOf(RedditChildrenResponse(redditPostResponse))))
 
         val POST_LIST = listOf(
-            Post(
-                "superhero",
-                "Test",
-                "Post list",
-                "Demian",
-                null,
-                0,
-                123L
-            )
+            createDummyPostList()
         )
 
         private val redditRefreshPostResponse =
-            RedditPostResponse(
-                "superhero",
-                "Test",
-                "Post refresh",
-                "Carl",
-                null,
-                0,
-                123L
-            )
+            createDummyRedditPostRefreshResponse()
 
-        val REDDIT_REFRESH_POST_RESPONSE =
+        private val POST_REFRESH_LIST = listOf(
+            createDummyPostRefresh()
+        )
+
+        private val POST_REFRESH_VIEWED_LIST = listOf(
+            createDummyPostRefreshViewed()
+        )
+
+        private val REDDIT_REFRESH_POST_RESPONSE =
             RedditResponse(
                 RedditDataResponse(
                     listOf(
@@ -288,32 +278,7 @@ class PostListViewModelTest {
                 )
             )
 
-        val POST_REFRESH_LIST = listOf(
-            Post(
-                "superhero",
-                "Test",
-                "Post refresh",
-                "Carl",
-                null,
-                0,
-                123L
-            )
-        )
-
-        val POST_REFRESH_VIEWED_LIST = listOf(
-            Post(
-                "superhero",
-                "Test",
-                "Post refresh",
-                "Carl",
-                null,
-                0,
-                123L,
-                false
-            )
-        )
-
-        val REDDIT_DISMISS_RESPONSE =
+        private val REDDIT_DISMISS_RESPONSE =
             RedditResponse(
                 RedditDataResponse(
                     listOf(
@@ -323,7 +288,6 @@ class PostListViewModelTest {
                     )
                 )
             )
-
     }
 
 }
